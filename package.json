@@ -2,9 +2,17 @@
 	"name": "file-manager",
 	"version": "1.0.0",
 	"description": "",
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"type": "module",
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/AlexanderFraltsov/file-manager.git"
 	},
 	"author": "Fraltsov Alexander",
 	"license": "MIT"
