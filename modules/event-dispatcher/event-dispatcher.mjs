@@ -1,7 +1,10 @@
 import process from 'node:process';
 
 import { getUpPath } from '../fs/get-up-path.mjs';
+import { getNewPath } from '../fs/get-new-path.mjs';
 import { printListOfFiles } from '../fs/print-list-of-files.mjs';
+import { OsUtils } from '../os/os-utils.mjs';
+import { ERROR_INVALID_INPUT } from '../../constants/constants.js';
 
 const COMMAND_WITH_ARGUMENTS_LIST = [
 	'cd',
@@ -34,7 +37,7 @@ export class EventDispatcher {
 	async dispatch(event) {
 		try {
 			if (!this.isCommandAvailable(event)) {
-				throw new Error('Invalid input');
+				throw new Error(ERROR_INVALID_INPUT);
 			}
 
 			if (this.isCommandFromCommandsWithoutArgumentsList(event)) {
@@ -81,7 +84,7 @@ export class EventDispatcher {
 				break;
 			}
 			case 'up':
-				const newWorkingDirectoryPath = getUpPath(this.fm.getWorkingDirectoryPath());
+				const newWorkingDirectoryPath = await getUpPath(this.fm.getWorkingDirectoryPath());
 				this.fm.setWorkingDirectoryPath(newWorkingDirectoryPath);
 				break;
 		}
@@ -90,5 +93,21 @@ export class EventDispatcher {
 	/**
 	 * @param {string} event
 	 */
-	dispatchCommandWithArguments = async (event) => {}
+	dispatchCommandWithArguments = async (event) => {
+		const [command] = event.trimStart().split(' ');
+		const argsString = event.trimStart().replace(command, '').trimStart();
+		// console.log({command,args: argsString});
+		switch (command) {
+			case 'cd': {
+				const newWorkingDirectoryPath = await getNewPath(this.fm.getWorkingDirectoryPath(), argsString);
+				this.fm.setWorkingDirectoryPath(newWorkingDirectoryPath);
+				break;
+			}
+
+			case 'os': {
+				await OsUtils.dispatch(argsString);
+				break;
+			}
+		}
+	}
 }
