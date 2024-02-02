@@ -1,32 +1,24 @@
 import process from 'node:process';
 
+import {
+	COMMAND_WITH_ARGUMENTS_LIST,
+	COMMAND_WITHOUT_ARGUMENTS_LIST,
+	ERROR_INVALID_INPUT,
+} from '../../constants/constants.js';
 import { getUpPath } from '../fs/get-up-path.mjs';
 import { getNewPath } from '../fs/get-new-path.mjs';
+import { OsDispatcher } from '../os-dispatcher/os-dispatcher.mjs';
 import { printListOfFiles } from '../fs/print-list-of-files.mjs';
-import { OsUtils } from '../os/os-utils.mjs';
-import { ERROR_INVALID_INPUT } from '../../constants/constants.js';
 
-const COMMAND_WITH_ARGUMENTS_LIST = [
-	'cd',
-	'os',
-	'cat',
-	'add',
-	'rn',
-	'cp',
-	'mv',
-	'rm',
-	'hash',
-	'compress',
-	'decompress',
-];
-
-const COMMAND_WITHOUT_ARGUMENTS_LIST = [
-	'.exit',
-	'up',
-	'ls',
-];
+/**
+ * @typedef FileManager
+ * @property {() => void} printWorkingDirectory
+ * @property {() => string} getWorkingDirectoryPath
+ * @property {(path: string) => void} setWorkingDirectoryPath
+ */
 
 export class EventDispatcher {
+	/**@type {FileManager} */
 	fm = null;
 
 	constructor(fm) { this.fm = fm; }
@@ -105,7 +97,7 @@ export class EventDispatcher {
 			}
 
 			case 'os': {
-				await OsUtils.dispatch(argsString);
+				await OsDispatcher.dispatch(argsString);
 				break;
 			}
 		}
