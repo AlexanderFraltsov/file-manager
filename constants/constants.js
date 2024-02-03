@@ -1,5 +1,7 @@
 export const ERROR_INVALID_INPUT = 'Invalid input';
 
+export const ERROR_OPERATION_FAILED = 'Operation failed';
+
 export const COMMAND_WITH_ARGUMENTS_LIST = [
 	'cd',
 	'os',

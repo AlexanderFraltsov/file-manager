@@ -110,7 +110,11 @@ export class EventDispatcher {
 			case 'cp':
 			case 'mv':
 			case 'rm': {
-				await FilesOperationDispatcher.dispatch(command, args);
+				await FilesOperationDispatcher.dispatch(
+					command,
+					argsString,
+					this.fm.getWorkingDirectoryPath()
+				);
 				break;
 			}
 			case 'hash': {
