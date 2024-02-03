@@ -5,10 +5,10 @@ import {
 	COMMAND_WITHOUT_ARGUMENTS_LIST,
 	ERROR_INVALID_INPUT,
 } from '../../constants/constants.js';
-import { getUpPath } from '../operations/get-up-path.mjs';
-import { getNewPath } from '../operations/get-new-path.mjs';
+import { getUpPath } from './operations/get-up-path.mjs';
 import { OsDispatcher } from '../os-dispatcher/os-dispatcher.mjs';
-import { printListOfFiles } from '../operations/print-list-of-files.mjs';
+import { getAbsolutePath } from './operations/get-absolute-path.mjs';
+import { printListOfFiles } from './operations/print-list-of-files.mjs';
 import { FilesOperationDispatcher } from '../files-operations-dispatcher/files-operations-dispatcher.mjs';
 
 /**
@@ -93,7 +93,7 @@ export class EventDispatcher {
 		const argsString = event.trimStart().replace(command, '').trimStart();
 		switch (command) {
 			case 'cd': {
-				const newWorkingDirectoryPath = await getNewPath(
+				const newWorkingDirectoryPath = await getAbsolutePath(
 					this.fm.getWorkingDirectoryPath(),
 					argsString,
 				);

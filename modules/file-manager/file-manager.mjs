@@ -3,7 +3,7 @@ import { homedir } from 'node:os';
 import { createInterface } from 'node:readline/promises';
 
 import { EventDispatcher } from '../event-dispatcher/event-dispatcher.mjs';
-import { getUsernameFromArguments } from '../../utils/get-username-from-args.mjs';
+import { getUsernameFromArguments } from './utils/get-username-from-args.mjs';
 
 export class FileManager {
 	username = '';
