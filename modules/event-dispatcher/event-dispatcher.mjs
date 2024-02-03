@@ -5,10 +5,11 @@ import {
 	COMMAND_WITHOUT_ARGUMENTS_LIST,
 	ERROR_INVALID_INPUT,
 } from '../../constants/constants.js';
-import { getUpPath } from '../fs/get-up-path.mjs';
-import { getNewPath } from '../fs/get-new-path.mjs';
+import { getUpPath } from '../operations/get-up-path.mjs';
+import { getNewPath } from '../operations/get-new-path.mjs';
 import { OsDispatcher } from '../os-dispatcher/os-dispatcher.mjs';
-import { printListOfFiles } from '../fs/print-list-of-files.mjs';
+import { printListOfFiles } from '../operations/print-list-of-files.mjs';
+import { FilesOperationDispatcher } from '../files-operations-dispatcher/files-operations-dispatcher.mjs';
 
 /**
  * @typedef FileManager
@@ -24,18 +25,18 @@ export class EventDispatcher {
 	constructor(fm) { this.fm = fm; }
 
 	/**
-	 * @param {string} event
+	 * @param {string} command
 	 */
-	async dispatch(event) {
+	async dispatch(command) {
 		try {
-			if (!this.isCommandAvailable(event)) {
+			if (!this.isCommandAvailable(command)) {
 				throw new Error(ERROR_INVALID_INPUT);
 			}
 
-			if (this.isCommandFromCommandsWithoutArgumentsList(event)) {
-				await this.dispatchCommandWithoutArguments(event);
+			if (this.isCommandFromCommandsWithoutArgumentsList(command)) {
+				await this.dispatchCommandWithoutArguments(command);
 			} else {
-				await this.dispatchCommandWithArguments(event);
+				await this.dispatchCommandWithArguments(command);
 			}
 
 			this.fm.printWorkingDirectory();
@@ -45,11 +46,11 @@ export class EventDispatcher {
 	}
 
 	/**
-	 * @param {string} event
+	 * @param {string} command
 	 */
-	isCommandAvailable = (event) =>
-		this.isCommandFromCommandsWithArgumentsList(event)
-		|| this.isCommandFromCommandsWithoutArgumentsList(event);
+	isCommandAvailable = (command) =>
+		this.isCommandFromCommandsWithArgumentsList(command)
+		|| this.isCommandFromCommandsWithoutArgumentsList(command);
 
 	/**
 	 * @param {string} event
@@ -64,10 +65,10 @@ export class EventDispatcher {
 		COMMAND_WITH_ARGUMENTS_LIST.some(command => event.trimStart().startsWith(`${command} `));
 
 	/**
-	 * @param {string} event
+	 * @param {string} command
 	 */
-	dispatchCommandWithoutArguments = async (event) => {
-		switch (event.trim()) {
+	dispatchCommandWithoutArguments = async (command) => {
+		switch (command.trim()) {
 			case '.exit': {
 				process.exit();
 			}
@@ -76,7 +77,9 @@ export class EventDispatcher {
 				break;
 			}
 			case 'up':
-				const newWorkingDirectoryPath = await getUpPath(this.fm.getWorkingDirectoryPath());
+				const newWorkingDirectoryPath = await getUpPath(
+					this.fm.getWorkingDirectoryPath(),
+				);
 				this.fm.setWorkingDirectoryPath(newWorkingDirectoryPath);
 				break;
 		}
@@ -88,16 +91,37 @@ export class EventDispatcher {
 	dispatchCommandWithArguments = async (event) => {
 		const [command] = event.trimStart().split(' ');
 		const argsString = event.trimStart().replace(command, '').trimStart();
-		// console.log({command,args: argsString});
 		switch (command) {
 			case 'cd': {
-				const newWorkingDirectoryPath = await getNewPath(this.fm.getWorkingDirectoryPath(), argsString);
+				const newWorkingDirectoryPath = await getNewPath(
+					this.fm.getWorkingDirectoryPath(),
+					argsString,
+				);
 				this.fm.setWorkingDirectoryPath(newWorkingDirectoryPath);
 				break;
 			}
-
 			case 'os': {
 				await OsDispatcher.dispatch(argsString);
+				break;
+			}
+			case 'cat':
+			case 'add':
+			case 'rn':
+			case 'cp':
+			case 'mv':
+			case 'rm': {
+				await FilesOperationDispatcher.dispatch(command, args);
+				break;
+			}
+			case 'hash': {
+				// TODO: add hash function
+				console.log('hash')
+				break;
+			}
+			case 'compress':
+			case 'decompress': {
+				// TODO: add zip functions
+				console.log('zip')
 				break;
 			}
 		}

@@ -1,9 +1,14 @@
-import { EOL, homedir, cpus, userInfo, arch } from 'node:os';
-
 import {
 	ERROR_INVALID_INPUT,
 	OS_COMMAND_LIST,
 } from '../../constants/constants.js';
+import { printEOL } from './operations/print-eol.mjs';
+import { printCpuInfo } from './operations/print-cpu-info.mjs';
+import { printHomedir } from './operations/print-homedir.mjs';
+import { printUsername } from './operations/print-username.mjs';
+import { printArchitecture } from './operations/print-architecture.mjs';
+
+
 
 export class OsDispatcher {
 	/**
@@ -22,38 +27,23 @@ export class OsDispatcher {
 
 		switch (command) {
 			case 'EOL': {
-				console.log(JSON.stringify(EOL));
+				printEOL();
 				break;
 			}
 			case 'cpus': {
-				const info = cpus()
-					.map(({ model, speed }) => ({
-						Model: model,
-						'Frequency, GHz': speed / 1000,
-					}));
-
-				console.log(
-					`${EOL}Host machine CPUs info:${
-						EOL
-					}Amount of cores - ${info.length};${
-						EOL
-					}Model - ${info[0].Model};${
-						EOL
-					}Details:`
-				);
-				console.table(info);
+				printCpuInfo();
 				break;
 			}
 			case 'homedir': {
-				console.log(homedir());
+				printHomedir();
 				break;
 			}
 			case 'username': {
-				console.log(userInfo().username);
+				printUsername();
 				break;
 			}
 			case 'architecture': {
-				console.log(arch());
+				printArchitecture();
 				break;
 			}
 		}
