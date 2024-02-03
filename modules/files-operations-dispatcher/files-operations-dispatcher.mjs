@@ -1,4 +1,5 @@
-import { createFile } from "./operations/create-file.mjs";
+import { readFile } from './operations/read-file.mjs';
+import { createFile } from './operations/create-file.mjs';
 
 export class FilesOperationDispatcher {
 	/**
@@ -6,10 +7,9 @@ export class FilesOperationDispatcher {
 	 * @param {string} args
 	 */
 	static dispatch = async (command, args, workingDirectoryPath) => {
-		// console.log(args);
 		switch (command) {
 			case 'cat': {
-
+				await readFile(args, workingDirectoryPath);
 				break;
 			}
 			case 'add': {
