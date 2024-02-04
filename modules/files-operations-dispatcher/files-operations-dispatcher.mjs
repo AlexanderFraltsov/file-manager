@@ -1,5 +1,6 @@
 import { readFile } from './operations/read-file.mjs';
 import { createFile } from './operations/create-file.mjs';
+import { deleteFile } from './operations/delete-file.mjs';
 
 export class FilesOperationDispatcher {
 	/**
@@ -29,7 +30,7 @@ export class FilesOperationDispatcher {
 				break;
 			}
 			case 'rm': {
-
+				await deleteFile(args, workingDirectoryPath);
 				break;
 			}
 		}
