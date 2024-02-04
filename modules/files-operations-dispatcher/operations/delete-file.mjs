@@ -4,12 +4,12 @@ import { join } from 'node:path';
 import { ERROR_OPERATION_FAILED } from '../../../constants/constants.js';
 
 /**
- * @param {string} filename
+ * @param {string} pathToFile
  * @param {string} workingDirectoryPath
  */
-export const deleteFile = async (filename, workingDirectoryPath) => {
+export const deleteFile = async (pathToFile, workingDirectoryPath) => {
 	try {
-		await rm(join(workingDirectoryPath, filename));
+		await rm(join(workingDirectoryPath, pathToFile));
 	} catch {
 		throw new Error(ERROR_OPERATION_FAILED);
 	}

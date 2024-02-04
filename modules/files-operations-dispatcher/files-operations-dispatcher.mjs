@@ -1,6 +1,7 @@
 import { readFile } from './operations/read-file.mjs';
 import { createFile } from './operations/create-file.mjs';
 import { deleteFile } from './operations/delete-file.mjs';
+import { renameFile } from './operations/rename-file.mjs';
 
 export class FilesOperationDispatcher {
 	/**
@@ -18,7 +19,7 @@ export class FilesOperationDispatcher {
 				break;
 			}
 			case 'rn': {
-
+				await renameFile(args, workingDirectoryPath);
 				break;
 			}
 			case 'cp': {
