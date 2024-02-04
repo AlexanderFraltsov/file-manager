@@ -8,6 +8,7 @@ export class FilesOperationDispatcher {
 	/**
 	 * @param {string} command
 	 * @param {string} args
+	 * @param {string} workingDirectoryPath
 	 */
 	static dispatch = async (command, args, workingDirectoryPath) => {
 		switch (command) {
