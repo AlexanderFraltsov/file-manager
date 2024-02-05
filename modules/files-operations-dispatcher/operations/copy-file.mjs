@@ -1,3 +1,4 @@
+import { pipeline } from 'node:stream';
 import { realpath, rm } from 'node:fs/promises';
 import { join, resolve, basename } from 'node:path';
 import { createReadStream, createWriteStream } from 'node:fs';
@@ -19,17 +20,17 @@ export const copyFile = async (args, workingDirectoryPath, shouldDelete = false)
 		await realpath(path1);
 		await realpath(path2);
 		return new Promise(res => {
-			const errorFunction = () => {
-				console.log(ERROR_OPERATION_FAILED);
-				res();
-			}
 			const streamOptions = { encoding: 'utf-8' };
-			const readStream = createReadStream(path1, streamOptions)
-				.on('error', errorFunction);
-			const writeStream = createWriteStream(join(path2, filename), streamOptions)
-				.on('error', errorFunction);
-
-			readStream.pipe(writeStream).on('close', async () => {
+			pipeline(
+				createReadStream(path1, streamOptions),
+				createWriteStream(join(path2, filename), streamOptions),
+				(err) => {
+					if (err) {
+						console.log(ERROR_OPERATION_FAILED);
+						res();
+					}
+				},
+			).on('close', async () => {
 				if (shouldDelete) {
 					await rm(join(workingDirectoryPath, pathToFile));
 				}
