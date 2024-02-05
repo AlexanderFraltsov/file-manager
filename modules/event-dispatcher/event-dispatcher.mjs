@@ -8,6 +8,7 @@ import {
 import { getUpPath } from './operations/get-up-path.mjs';
 import { getFileHash } from './operations/get-file-hash.mjs';
 import { OsDispatcher } from '../os-dispatcher/os-dispatcher.mjs';
+import { ZlibDispatcher } from '../zlib-dispatcher/zlib-dispatcher.mjs';
 import { getAbsolutePath } from './operations/get-absolute-path.mjs';
 import { printListOfFiles } from './operations/print-list-of-files.mjs';
 import { FilesOperationDispatcher } from '../files-operations-dispatcher/files-operations-dispatcher.mjs';
@@ -114,19 +115,21 @@ export class EventDispatcher {
 				await FilesOperationDispatcher.dispatch(
 					command,
 					argsString,
-					this.fm.getWorkingDirectoryPath()
+					this.fm.getWorkingDirectoryPath(),
 				);
 				break;
 			}
 			case 'hash': {
-				// TODO: add hash function
 				await getFileHash(argsString, this.fm.getWorkingDirectoryPath());
 				break;
 			}
 			case 'compress':
 			case 'decompress': {
-				// TODO: add zip functions
-				console.log('zip')
+				await ZlibDispatcher.dispatch(
+					command,
+					argsString,
+					this.fm.getWorkingDirectoryPath(),
+				)
 				break;
 			}
 		}
