@@ -1,5 +1,5 @@
 import { pipeline } from 'node:stream';
-import { realpath } from 'node:fs/promises';
+import { realpath, rm } from 'node:fs/promises';
 import { createBrotliCompress } from 'node:zlib';
 import { join, resolve, basename } from 'node:path';
 import { createReadStream, createWriteStream } from 'node:fs';
@@ -20,19 +20,21 @@ export const compressFile = async (args, workingDirectoryPath) => {
 		await realpath(path1);
 		await realpath(path2);
 		return new Promise(res => {
+			const resultFilePath = join(path2, `${filename}.br`);
 			pipeline(
 				createReadStream(path1),
 				createBrotliCompress(),
-				createWriteStream(join(path2, `${filename}.br`)),
+				createWriteStream(resultFilePath),
 				(err) => {
 					if (err) {
+						rm(resultFilePath);
 						console.log(ERROR_OPERATION_FAILED);
 						res();
 					}
 				}
 			).on('close', () => res());
 		});
-	} catch (error) {
+	} catch {
 		throw new Error(ERROR_OPERATION_FAILED);
 	}
 }

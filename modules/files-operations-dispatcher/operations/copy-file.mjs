@@ -21,11 +21,13 @@ export const copyFile = async (args, workingDirectoryPath, shouldDelete = false)
 		await realpath(path2);
 		return new Promise(res => {
 			const streamOptions = { encoding: 'utf-8' };
+			const resultFilePath = join(path2, filename);
 			pipeline(
 				createReadStream(path1, streamOptions),
-				createWriteStream(join(path2, filename), streamOptions),
+				createWriteStream(resultFilePath, streamOptions),
 				(err) => {
 					if (err) {
+						rm(resultFilePath);
 						console.log(ERROR_OPERATION_FAILED);
 						res();
 					}

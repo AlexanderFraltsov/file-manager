@@ -40,10 +40,10 @@ export class EventDispatcher {
 			} else {
 				await this.dispatchCommandWithArguments(command);
 			}
-
-			this.fm.printWorkingDirectory();
 		} catch (error) {
 			console.log(error.message);
+		} finally {
+			this.fm.printWorkingDirectory();
 		}
 	}
 
