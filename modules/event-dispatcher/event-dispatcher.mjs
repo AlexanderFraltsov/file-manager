@@ -6,6 +6,7 @@ import {
 	ERROR_INVALID_INPUT,
 } from '../../constants/constants.js';
 import { getUpPath } from './operations/get-up-path.mjs';
+import { getFileHash } from './operations/get-file-hash.mjs';
 import { OsDispatcher } from '../os-dispatcher/os-dispatcher.mjs';
 import { getAbsolutePath } from './operations/get-absolute-path.mjs';
 import { printListOfFiles } from './operations/print-list-of-files.mjs';
@@ -119,7 +120,7 @@ export class EventDispatcher {
 			}
 			case 'hash': {
 				// TODO: add hash function
-				console.log('hash')
+				await getFileHash(argsString, this.fm.getWorkingDirectoryPath());
 				break;
 			}
 			case 'compress':
